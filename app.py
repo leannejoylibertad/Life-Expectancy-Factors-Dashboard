@@ -122,7 +122,7 @@ st.image(banner, use_column_width=True)
 # ── Credits Ribbon ─────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="credits-ribbon">
-    📊 Dashboard guided by <b>Paolo G. Hilado, MSc.</b> &nbsp;|&nbsp; ⚠️ This dashboard is for Training Purposes Only.
+    Paolo G. Hilado, MSc.</b> &nbsp;|&nbsp;| Notice: This dashboard is for Training Purposes Only.
 </div>
 """, unsafe_allow_html=True)
 
@@ -217,6 +217,25 @@ for _, row in filtered_df.iterrows():
 st.text("")
 st.markdown('<hr class="fancy-divider">', unsafe_allow_html=True)
 
+# ── Shared style dicts ─────────────────────────────────────────────────────────
+AXIS_STYLE = dict(
+    title_font=dict(size=14, color="#1B4F72", family="DM Sans"),
+    tickfont=dict(size=12, color="#1B4F72", family="DM Sans"),
+    showgrid=True, gridcolor="#D5E8F0",
+    linecolor="#1B4F72", linewidth=1.5,
+)
+LEGEND_STYLE = dict(
+    font=dict(size=12, color="#1B4F72", family="DM Sans"),
+    bgcolor="rgba(255,255,255,0.85)",
+    bordercolor="#1B4F72", borderwidth=1,
+)
+LAYOUT_BASE = dict(
+    title_font=dict(family="Playfair Display", size=18, color="#1B4F72"),
+    plot_bgcolor="#FAFAFA", paper_bgcolor="#F7F4EF",
+    font=dict(family="DM Sans", color="#1B4F72"),
+)
+COLORS = ["#1B4F72","#117A65","#F39C12","#C0392B","#8E44AD","#2E86C1"]
+
 # ── Charts Row 1 ───────────────────────────────────────────────────────────────
 st.markdown("<div class='section-header'>📈 Trends & Comparisons</div>", unsafe_allow_html=True)
 
@@ -226,14 +245,16 @@ trend = df.groupby("Year", as_index=False)["Life Expectancy"].mean()
 with chart_col1:
     fig_line = px.line(
         trend, x="Year", y="Life Expectancy",
-        title=f"Global Average Life Expectancy Over Time",
+        title="Global Average Life Expectancy Over Time",
         color_discrete_sequence=["#117A65"],
-        template="plotly_white"
+        template="plotly_white",
+        labels={"Year": "Year", "Life Expectancy": "Life Expectancy (years)"}
     )
     fig_line.update_traces(line=dict(width=3))
     fig_line.update_layout(
-        title_font=dict(family="Playfair Display", size=18, color="#1B4F72"),
-        plot_bgcolor="#FAFAFA", paper_bgcolor="#F7F4EF"
+        **LAYOUT_BASE,
+        xaxis=dict(**AXIS_STYLE, title_text="Year"),
+        yaxis=dict(**AXIS_STYLE, title_text="Life Expectancy (years)"),
     )
     st.plotly_chart(fig_line, use_container_width=True)
 
@@ -242,13 +263,21 @@ with chart_col2:
         filtered_df, x="Country", y="Life Expectancy",
         color="Country",
         title=f"Life Expectancy by Country ({selected_year})",
-        color_discrete_sequence=px.colors.qualitative.Safe,
-        template="plotly_white"
+        color_discrete_sequence=COLORS,
+        template="plotly_white",
+        text="Life Expectancy",
+        labels={"Country": "Country", "Life Expectancy": "Life Expectancy (years)"}
+    )
+    fig_bar.update_traces(
+        texttemplate="%{text:.1f}",
+        textposition="outside",
+        textfont=dict(size=13, color="#1B4F72", family="DM Sans")
     )
     fig_bar.update_layout(
-        title_font=dict(family="Playfair Display", size=18, color="#1B4F72"),
-        plot_bgcolor="#FAFAFA", paper_bgcolor="#F7F4EF",
-        showlegend=False
+        **LAYOUT_BASE,
+        showlegend=False,
+        xaxis=dict(**AXIS_STYLE, title_text="Country"),
+        yaxis=dict(**AXIS_STYLE, title_text="Life Expectancy (years)"),
     )
     st.plotly_chart(fig_bar, use_container_width=True)
 
@@ -260,12 +289,15 @@ with chart_col3:
         df, x="GDP per Capita", y="Life Expectancy",
         color="Country", trendline="ols",
         title="Does Wealth Buy Longer Life?",
-        color_discrete_sequence=px.colors.qualitative.Safe,
-        template="plotly_white"
+        color_discrete_sequence=COLORS,
+        template="plotly_white",
+        labels={"GDP per Capita": "GDP per Capita (USD)", "Life Expectancy": "Life Expectancy (years)"}
     )
     fig_scatter.update_layout(
-        title_font=dict(family="Playfair Display", size=18, color="#1B4F72"),
-        plot_bgcolor="#FAFAFA", paper_bgcolor="#F7F4EF"
+        **LAYOUT_BASE,
+        xaxis=dict(**AXIS_STYLE, title_text="GDP per Capita (USD)"),
+        yaxis=dict(**AXIS_STYLE, title_text="Life Expectancy (years)"),
+        legend=LEGEND_STYLE,
     )
     st.plotly_chart(fig_scatter, use_container_width=True)
 
@@ -277,12 +309,19 @@ with chart_col4:
         color="Country",
         hover_name="Country",
         title=f"Wealth × Education × Longevity ({selected_year})",
-        color_discrete_sequence=px.colors.qualitative.Safe,
-        template="plotly_white"
+        color_discrete_sequence=COLORS,
+        template="plotly_white",
+        labels={
+            "GDP per Capita": "GDP per Capita (USD)",
+            "Life Expectancy": "Life Expectancy (years)",
+            "Education Index": "Education Index"
+        }
     )
     fig_bubble.update_layout(
-        title_font=dict(family="Playfair Display", size=18, color="#1B4F72"),
-        plot_bgcolor="#FAFAFA", paper_bgcolor="#F7F4EF"
+        **LAYOUT_BASE,
+        xaxis=dict(**AXIS_STYLE, title_text="GDP per Capita (USD)"),
+        yaxis=dict(**AXIS_STYLE, title_text="Life Expectancy (years)"),
+        legend=LEGEND_STYLE,
     )
     st.plotly_chart(fig_bubble, use_container_width=True)
 
