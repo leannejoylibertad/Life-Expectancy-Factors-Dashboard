@@ -122,7 +122,7 @@ st.image(banner, use_column_width=True)
 # ── Credits Ribbon ─────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="credits-ribbon">
-    Paolo G. Hilado, MSc.</b> &nbsp;|&nbsp;| Notice: This dashboard is for Training Purposes Only.
+    Leanne Joy P. Libertad</b> &nbsp;|&nbsp;| Notice: This dashboard is for Training Purposes Only.
 </div>
 """, unsafe_allow_html=True)
 
@@ -369,7 +369,6 @@ st.markdown("""
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div style="text-align:center; margin-top:40px; font-size:13px; color:#aaa; padding-bottom:20px;">
-    Dashboard created for academic training purposes only. &nbsp;|&nbsp;
-    Guided by <b>Paolo G. Hilado, MSc.</b>
+
 </div>
 """, unsafe_allow_html=True)
